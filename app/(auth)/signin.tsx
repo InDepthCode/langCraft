@@ -1,46 +1,66 @@
-import { Image, ScrollView, StyleSheet, TextInput, View as RNView } from "react-native";
+import { Image, ScrollView, StyleSheet, TextInput, View as RNView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, Pressable } from "@/tw";
 import { images } from "@/constants/images";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState, useCallback } from "react";
-import { useSignIn, useSSO } from "@clerk/expo";
+import React, { useState, useCallback, useEffect } from "react";
+import { useSignIn, useSignUp, useSSO } from "@clerk/expo";
 import { VerificationModal } from "@/components/VerificationModal";
 import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
+import * as AuthSession from "expo-auth-session";
 
 WebBrowser.maybeCompleteAuthSession();
+
 
 export default function SignInScreen() {
   const router = useRouter();
   const { signIn, fetchStatus } = useSignIn();
+  const { signUp } = useSignUp();
   const { startSSOFlow } = useSSO();
+
 
   const [emailAddress, setEmailAddress] = useState("");
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // Warm up the browser to improve performance on native platforms
+    if (Platform.OS !== "web") {
+      WebBrowser.warmUpAsync();
+    }
+    return () => {
+      if (Platform.OS !== "web") {
+        WebBrowser.coolDownAsync();
+      }
+    };
+  }, []);
+
+
 
   const onSignInPress = async () => {
     if (!signIn) return;
 
     try {
-      // In this version of the SDK, passwordless might be different. 
-      // We'll try the emailCode method if it exists, otherwise we'll have to ask or check docs.
-      // Based on the pattern in SignUp, it's likely signIn.emailCode or similar.
-      const { error } = await (signIn as any).emailCode({
-        emailAddress,
+      // Create a sign-in attempt first to establish the client context
+      const { error } = await (signIn as any).create({
+        identifier: emailAddress,
       });
 
       if (error) {
-        alert(error.message);
+        alert(error.message || "Failed to find account");
         return;
       }
 
+      // After creating the attempt, we send the code if it's passwordless
+      await (signIn as any).verifications.sendEmailCode();
       setShowModal(true);
     } catch (err: any) {
       console.error(err);
-      alert("Something went wrong");
+      alert("Something went wrong or email code is not supported");
     }
   };
+
 
   const onVerifyPress = async (code: string) => {
     if (!signIn) return;
@@ -72,7 +92,9 @@ export default function SignInScreen() {
     try {
       const { createdSessionId, setActive: setSocialActive } = await startSSOFlow({
         strategy,
-        redirectUrl: "languagecraft://oauth-callback",
+        redirectUrl: AuthSession.makeRedirectUri(),
+        signUp,
+        signIn,
       });
 
       if (createdSessionId) {
@@ -83,7 +105,8 @@ export default function SignInScreen() {
       console.error(JSON.stringify(err, null, 2));
       alert(err.errors?.[0]?.message || "Social login failed");
     }
-  }, [startSSOFlow]);
+  }, [startSSOFlow, signUp, signIn]);
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>

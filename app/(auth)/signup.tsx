@@ -1,36 +1,54 @@
-import { Image, ScrollView, StyleSheet, TextInput, View as RNView } from "react-native";
+import { Image, ScrollView, StyleSheet, TextInput, View as RNView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, Pressable } from "@/tw";
 import { images } from "@/constants/images";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useSignUp, useSSO } from "@clerk/expo";
-import React, { useState, useCallback } from "react";
-import { VerificationModal } from "@/components/VerificationModal";
+import { useSignUp, useSignIn, useSSO } from "@clerk/expo";
 import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
+import * as AuthSession from "expo-auth-session";
+import React, { useState, useCallback, useEffect } from "react";
+import { VerificationModal } from "@/components/VerificationModal";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUpScreen() {
   const router = useRouter();
   const { signUp, fetchStatus } = useSignUp();
+  const { signIn } = useSignIn();
   const { startSSOFlow } = useSSO();
+
   
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    // Warm up the browser to improve performance on native platforms
+    if (Platform.OS !== "web") {
+      WebBrowser.warmUpAsync();
+    }
+    return () => {
+      if (Platform.OS !== "web") {
+        WebBrowser.coolDownAsync();
+      }
+    };
+  }, []);
+
+
+
   const onSignUpPress = async () => {
     if (!signUp) return;
 
     try {
-      const { error } = await signUp.password({
+      const { error } = await (signUp as any).create({
         emailAddress,
         password,
       });
 
       if (error) {
-        alert(error.message);
+        alert(error.message || "Failed to create account");
         return;
       }
 
@@ -41,6 +59,7 @@ export default function SignUpScreen() {
       alert("Something went wrong");
     }
   };
+
 
   const onVerifyPress = async (code: string) => {
     if (!signUp) return;
@@ -72,7 +91,9 @@ export default function SignUpScreen() {
     try {
       const { createdSessionId, setActive: setSocialActive } = await startSSOFlow({
         strategy,
-        redirectUrl: "languagecraft://oauth-callback",
+        redirectUrl: AuthSession.makeRedirectUri(),
+        signUp,
+        signIn,
       });
 
       if (createdSessionId) {
