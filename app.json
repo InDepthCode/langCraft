@@ -28,7 +28,12 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "@clerk/expo",
+      [
+        "@clerk/expo",
+        {
+          "iosUrlScheme": "languagecraft"
+        }
+      ],
       [
         "expo-splash-screen",
         {
