@@ -60,42 +60,42 @@
     /* ── Typography Scale ──────────────────────────────────────────────────── */
     /* H1 — Page / Screen Title: 32px Bold lh 1.2 */
     --text-h1: 32px;
-    --text-h1--line-height: 1.2;
+    --text-h1--line-height: 38.4px;
     --text-h1--font-weight: 700;
 
     /* H2 — Section Title: 24px SemiBold lh 1.3 */
     --text-h2: 24px;
-    --text-h2--line-height: 1.3;
+    --text-h2--line-height: 31.2px;
     --text-h2--font-weight: 600;
 
     /* H3 — Card / Module Title: 20px SemiBold lh 1.3 */
     --text-h3: 20px;
-    --text-h3--line-height: 1.3;
+    --text-h3--line-height: 26px;
     --text-h3--font-weight: 600;
 
     /* H4 — Subheading: 16px Medium lh 1.4 */
     --text-h4: 16px;
-    --text-h4--line-height: 1.4;
+    --text-h4--line-height: 22.4px;
     --text-h4--font-weight: 500;
 
     /* Body Large — Important content: 16px Regular lh 1.6 */
     --text-body-lg: 16px;
-    --text-body-lg--line-height: 1.6;
+    --text-body-lg--line-height: 25.6px;
     --text-body-lg--font-weight: 400;
 
     /* Body Medium — Body text: 14px Regular lh 1.6 */
     --text-body-md: 14px;
-    --text-body-md--line-height: 1.6;
+    --text-body-md--line-height: 22.4px;
     --text-body-md--font-weight: 400;
 
     /* Body Small — Supporting text: 13px Regular lh 1.6 */
     --text-body-sm: 13px;
-    --text-body-sm--line-height: 1.6;
+    --text-body-sm--line-height: 20.8px;
     --text-body-sm--font-weight: 400;
 
     /* Caption — Labels / meta text: 11px Regular lh 1.4 */
     --text-caption: 11px;
-    --text-caption--line-height: 1.4;
+    --text-caption--line-height: 15.4px;
     --text-caption--font-weight: 400;
 
     /* ── Border Radius ─────────────────────────────────────────────────────── */
@@ -184,9 +184,11 @@
 /* -- btn -- Primary button */
 .btn--primary {
   background-color: var(--color-brand-purple);
-  border-radius: var(--radius-xl);
-  padding-horizontal: var(--spacing-xl);
-  padding-vertical: var(--spacing-base);
+  border-radius: var(--radius-md);
+  padding-top: var(--spacing-base);
+  padding-bottom: var(--spacing-base);
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
   align-items: center;
   justify-content: center;
 }
@@ -203,9 +205,11 @@
   background-color: transparent;
   border-width: 2px;
   border-color: var(--color-brand-purple);
-  border-radius: var(--radius-xl);
-  padding-horizontal: var(--spacing-xl);
-  padding-vertical: var(--spacing-base);
+  border-radius: var(--radius-md);
+  padding-top: var(--spacing-base);
+  padding-bottom: var(--spacing-base);
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
   align-items: center;
   justify-content: center;
 }
@@ -234,29 +238,37 @@
 .badge--success {
   background-color: var(--color-semantic-success);
   border-radius: var(--radius-sm);
-  padding-horizontal: var(--spacing-sm);
-  padding-vertical: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
 }
 
 .badge--warning {
   background-color: var(--color-semantic-warning);
   border-radius: var(--radius-sm);
-  padding-horizontal: var(--spacing-sm);
-  padding-vertical: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
 }
 
 .badge--streak {
   background-color: var(--color-semantic-streak);
   border-radius: var(--radius-sm);
-  padding-horizontal: var(--spacing-sm);
-  padding-vertical: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
 }
 
 .badge--error {
   background-color: var(--color-semantic-error);
   border-radius: var(--radius-sm);
-  padding-horizontal: var(--spacing-sm);
-  padding-vertical: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
 }
 
 /* -- divider -- */
@@ -274,5 +286,6 @@
 .screen--padded {
   flex: 1;
   background-color: var(--color-neutral-background);
-  padding-horizontal: var(--spacing-base);
+  padding-left: var(--spacing-base);
+  padding-right: var(--spacing-base);
 }
