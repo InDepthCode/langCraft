@@ -5,8 +5,52 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
+import { ClerkProvider, ClerkLoaded } from "@clerk/expo";
+import { tokenCache } from "@/lib/token-cache";
+
+import { useAuth } from "@clerk/expo";
+import { useRouter, useSegments } from "expo-router";
+
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
+
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+if (!publishableKey) {
+  throw new Error(
+    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  );
+}
+
+function InitialLayout() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inAuthGroup = segments[0] === "(auth)";
+    const isOnboarding = segments[0] === "onboarding";
+
+    if (isSignedIn && (inAuthGroup || isOnboarding)) {
+      // Redirect to home if signed in and trying to access auth/onboarding
+      router.replace("/");
+    } else if (!isSignedIn && !inAuthGroup && !isOnboarding) {
+      // Redirect to onboarding if not signed in and trying to access private routes
+      router.replace("/onboarding");
+    }
+  }, [isSignedIn, isLoaded, segments]);
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "#FFFFFF" },
+      }}
+    />
+  );
+}
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -28,11 +72,12 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: "#FFFFFF" },
-      }}
-    />
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <ClerkLoaded>
+        <InitialLayout />
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 }
+
+
