@@ -10,6 +10,7 @@ import { ClerkLoaded, ClerkProvider } from "@clerk/expo";
 
 import { useAuth } from "@clerk/expo";
 import { useRouter, useSegments } from "expo-router";
+import { useLanguageStore } from "@/store/language-store";
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -26,6 +27,7 @@ function InitialLayout() {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const selectedLanguageId = useLanguageStore((state) => state.selectedLanguageId);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -34,14 +36,25 @@ function InitialLayout() {
     const isOnboarding = segments[0] === "onboarding";
     const isChooseLanguage = segments[0] === "choose-language";
 
-    if (isSignedIn && (inAuthGroup || isOnboarding)) {
-      // Redirect to choose-language if signed in and trying to access auth/onboarding
-      router.replace("/choose-language");
-    } else if (!isSignedIn && !inAuthGroup && !isOnboarding && !isChooseLanguage) {
+    if (isSignedIn) {
+      if (!selectedLanguageId) {
+        // Redirect to choose-language if signed in and trying to access private routes without language selected
+        if (!isChooseLanguage) {
+          router.replace("/choose-language");
+        }
+      } else {
+        // Redirect to home if signed in, has language, and trying to access auth/onboarding
+        if (inAuthGroup || isOnboarding) {
+          router.replace("/");
+        }
+      }
+    } else {
       // Redirect to onboarding if not signed in and trying to access private routes
-      router.replace("/onboarding");
+      if (!inAuthGroup && !isOnboarding && !isChooseLanguage) {
+        router.replace("/onboarding");
+      }
     }
-  }, [isSignedIn, isLoaded, segments]);
+  }, [isSignedIn, isLoaded, segments, selectedLanguageId]);
 
   return (
     <Stack
@@ -61,14 +74,16 @@ export default function RootLayout() {
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
   });
 
+  const _hasHydrated = useLanguageStore((state) => state._hasHydrated);
+
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    if ((fontsLoaded || fontError) && _hasHydrated) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, _hasHydrated]);
 
-  // Wait for fonts before rendering
-  if (!fontsLoaded && !fontError) {
+  // Wait for fonts and store hydration before rendering
+  if ((!fontsLoaded && !fontError) || !_hasHydrated) {
     return null;
   }
 
