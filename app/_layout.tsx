@@ -1,12 +1,12 @@
 import "../global.css";
 
-import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
-import { ClerkProvider, ClerkLoaded } from "@clerk/expo";
 import { tokenCache } from "@/lib/token-cache";
+import { ClerkLoaded, ClerkProvider } from "@clerk/expo";
 
 import { useAuth } from "@clerk/expo";
 import { useRouter, useSegments } from "expo-router";
