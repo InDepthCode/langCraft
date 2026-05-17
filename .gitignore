@@ -43,5 +43,5 @@ app-example
 /android
 
 
-prompt/*
-prompt-material/*
+/prompts/
+/prompt_material/
