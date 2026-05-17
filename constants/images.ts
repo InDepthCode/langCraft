@@ -12,7 +12,7 @@ import palace from "@/assets/images/palace.png";
 import treasure from "@/assets/images/treasure.png";
 import icon from "@/assets/images/icon.png";
 import splashIcon from "@/assets/images/splash-icon.png";
-
+import flag from "@/assets/images/flag.png";
 export const images = {
   mascotWelcome,
   mascotAuth,
