@@ -32,11 +32,12 @@ function InitialLayout() {
 
     const inAuthGroup = segments[0] === "(auth)";
     const isOnboarding = segments[0] === "onboarding";
+    const isChooseLanguage = segments[0] === "choose-language";
 
     if (isSignedIn && (inAuthGroup || isOnboarding)) {
-      // Redirect to home if signed in and trying to access auth/onboarding
-      router.replace("/");
-    } else if (!isSignedIn && !inAuthGroup && !isOnboarding) {
+      // Redirect to choose-language if signed in and trying to access auth/onboarding
+      router.replace("/choose-language");
+    } else if (!isSignedIn && !inAuthGroup && !isOnboarding && !isChooseLanguage) {
       // Redirect to onboarding if not signed in and trying to access private routes
       router.replace("/onboarding");
     }
