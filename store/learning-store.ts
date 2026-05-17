@@ -18,8 +18,8 @@ export const useLearningStore = create<LearningState>()(
   persist(
     (set) => ({
       completedActivityIds: [],
-      xp: 15, // Initial realistic visual representation
-      streak: 3, // Initial active profile streak
+      xp: 0, // Initial realistic visual representation
+      streak: 0, // Initial active profile streak
       toggleActivityCompleted: (activityId, xpReward) =>
         set((state) => {
           const isCompleted = state.completedActivityIds.includes(activityId);

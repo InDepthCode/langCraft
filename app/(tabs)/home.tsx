@@ -1,22 +1,22 @@
-import { useUser } from "@clerk/expo";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, Pressable, ScrollView } from "@/tw";
-import { Image } from "@/tw/image";
-import { useRouter } from "expo-router";
+import { images } from "@/constants/images";
+import { languages } from "@/data/languages";
+import { lessons } from "@/data/lessons";
+import { units } from "@/data/units";
 import { useLanguageStore } from "@/store/language-store";
 import { useLearningStore } from "@/store/learning-store";
-import { languages } from "@/data/languages";
-import { units } from "@/data/units";
-import { lessons } from "@/data/lessons";
-import { images } from "@/constants/images";
+import { Pressable, ScrollView, Text, View } from "@/tw";
+import { Image } from "@/tw/image";
+import { useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { user } = useUser();
   const router = useRouter();
-  
+
   const { selectedLanguageId } = useLanguageStore();
   const { completedActivityIds, xp, streak, toggleActivityCompleted } = useLearningStore();
 
@@ -92,32 +92,32 @@ export default function HomeScreen() {
   };
 
   // Calculate daily goal percentage capped at 100%
-  const goalXpTarget = 20;
+  const goalXpTarget = 50;
   const progressPercent = Math.min(100, (xp / goalXpTarget) * 100);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffffff" }}>
       {/* Scrollable Container */}
-      <ScrollView 
+      <ScrollView
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 110, paddingTop: 16 }}
+        contentContainerStyle={{ paddingBottom: 110, paddingTop: 19 }}
       >
         {/* ─── 1. HEADER SECTION ─── */}
         <View className="flex-row items-center justify-between mb-6">
           <View className="flex-row items-center flex-1">
             {/* Circular selected language flag */}
-            <Pressable 
+            <Pressable
               onPress={() => router.push("/choose-language")}
               className="w-10 h-10 rounded-full overflow-hidden border-2 border-neutral-border items-center justify-center bg-neutral-surface"
             >
-              <Image 
-                source={{ uri: selectedLanguage.flag }} 
+              <Image
+                source={{ uri: selectedLanguage.flag }}
                 className="w-full h-full"
                 resizeMode="cover"
               />
             </Pressable>
-            
+
             {/* Greeting using BEM and explicit fontFamily to guarantee correct rendering */}
             <View className="ml-3 justify-center">
               <Text className="text--h3 text-neutral-text-primary" style={{ fontFamily: "Poppins-Bold" }}>
@@ -130,7 +130,7 @@ export default function HomeScreen() {
           <View className="flex-row items-center gap-x-4">
             {/* Streak Counter */}
             <View className="flex-row items-center bg-neutral-surface px-3 py-1.5 rounded-full border border-neutral-border">
-              <Image 
+              <Image
                 source={images.streakFire}
                 className="w-5 h-5 mr-1.5"
                 resizeMode="contain"
@@ -148,14 +148,16 @@ export default function HomeScreen() {
         </View>
 
         {/* ─── 2. DAILY GOAL / XP CARD ─── */}
-        <View 
+        <View
           className="w-full bg-[#FFFDF5] border border-[#FDE68A] rounded-3xl p-5 mb-5 flex-row items-center justify-between"
           style={styles.shadowSubtle}
         >
           <View className="flex-1 pr-4">
-            <Text className="text--caption text-neutral-text-secondary uppercase tracking-wider mb-1" style={{ fontFamily: "Poppins-SemiBold" }}>
-              Daily goal
-            </Text>
+            <View className="flex-row items-center justify-between mb-1">
+              <Text className="text--caption text-neutral-text-secondary uppercase tracking-wider" style={{ fontFamily: "Poppins-SemiBold" }}>
+                Daily goal
+              </Text>
+            </View>
             <View className="flex-row items-baseline mb-3">
               <Text className="text--h1 text-[#0D132B]" style={{ fontSize: 28, fontFamily: "Poppins-Bold" }}>
                 {xp}
@@ -164,26 +166,26 @@ export default function HomeScreen() {
                 / {goalXpTarget} XP
               </Text>
             </View>
-            
+
             {/* Rounded progress bar */}
             <View className="w-full h-2 bg-[#FFEDD5] rounded-full overflow-hidden">
-              <View 
-                className="h-full bg-[#F97316] rounded-full" 
+              <View
+                className="h-full bg-[#F97316] rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </View>
           </View>
 
           {/* 3D Chest Illustration */}
-          <Image 
-            source={images.treasure} 
+          <Image
+            source={images.treasure}
             className="w-20 h-20"
             resizeMode="contain"
           />
         </View>
 
         {/* ─── 3. CONTINUE LEARNING / UNIT GRADIENT CARD ─── */}
-        <View 
+        <View
           className="w-full bg-brand-purple rounded-3xl p-5 mb-6 relative overflow-hidden flex-row"
           style={styles.shadowSubtle}
         >
@@ -198,9 +200,9 @@ export default function HomeScreen() {
             <Text className="text--body-md text-white/80 mb-5" style={{ fontFamily: "Poppins-Medium" }}>
               Unit {activeUnit.number} • {activeUnit.title}
             </Text>
-            
+
             {/* White action button */}
-            <Pressable 
+            <Pressable
               onPress={() => router.push(`/lesson?lessonId=${activeLesson.id}` as any)}
               className="bg-white rounded-full py-2.5 px-6 self-start active:opacity-90"
             >
@@ -212,8 +214,8 @@ export default function HomeScreen() {
 
           {/* Gold Castle Illustration absolutely positioned at bottom right */}
           <View className="absolute bottom-0 right-0 w-28 h-28 items-end justify-end pointer-events-none">
-            <Image 
-              source={images.palace} 
+            <Image
+              source={images.palace}
               className="w-[110px] h-[110px]"
               resizeMode="contain"
             />
@@ -278,7 +280,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        
+
       </ScrollView>
     </SafeAreaView>
   );
