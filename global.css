@@ -221,6 +221,27 @@
   color: var(--color-brand-purple);
 }
 
+/* -- btn -- Danger (outlined error) button */
+.btn--danger {
+  background-color: transparent;
+  border-width: 2px;
+  border-color: var(--color-semantic-error);
+  border-radius: var(--radius-md);
+  padding-top: var(--spacing-base);
+  padding-bottom: var(--spacing-base);
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+  align-items: center;
+  justify-content: center;
+}
+
+.btn--danger__label {
+  font-size: var(--text-h4);
+  line-height: var(--text-h4--line-height);
+  font-family: var(--font-poppins-semibold);
+  color: var(--color-semantic-error);
+}
+
 /* -- card -- */
 .card {
   background-color: var(--color-neutral-background);
